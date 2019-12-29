@@ -12492,7 +12492,7 @@ void Player::DestroyItem(uint8 bag, uint8 slot, bool update)
     }
 }
 
-void Player::DestroyItemCount(uint32 itemEntry, uint32 count, bool update, bool unequip_check)
+uint32 Player::DestroyItemCount(uint32 itemEntry, uint32 count, bool update, bool unequip_check)
 {
     TC_LOG_DEBUG("entities.player.items", "Player::DestroyItemCount: Player '%s' (%s), Item: %u, Count: %u",
         GetName().c_str(), GetGUID().ToString().c_str(), itemEntry, count);
@@ -12512,7 +12512,7 @@ void Player::DestroyItemCount(uint32 itemEntry, uint32 count, bool update, bool 
                     DestroyItem(INVENTORY_SLOT_BAG_0, i, update);
 
                     if (remcount >= count)
-                        return;
+                        return remcount;
                 }
                 else
                 {
@@ -12521,7 +12521,7 @@ void Player::DestroyItemCount(uint32 itemEntry, uint32 count, bool update, bool 
                     if (IsInWorld() && update)
                         item->SendUpdateToPlayer(this);
                     item->SetState(ITEM_CHANGED, this);
-                    return;
+                    return remcount;
                 }
             }
         }
@@ -12540,7 +12540,7 @@ void Player::DestroyItemCount(uint32 itemEntry, uint32 count, bool update, bool 
                     DestroyItem(INVENTORY_SLOT_BAG_0, i, update);
 
                     if (remcount >= count)
-                        return;
+                        return remcount;
                 }
                 else
                 {
@@ -12549,7 +12549,7 @@ void Player::DestroyItemCount(uint32 itemEntry, uint32 count, bool update, bool 
                     if (IsInWorld() && update)
                         item->SendUpdateToPlayer(this);
                     item->SetState(ITEM_CHANGED, this);
-                    return;
+                    return remcount;
                 }
             }
         }
@@ -12573,7 +12573,7 @@ void Player::DestroyItemCount(uint32 itemEntry, uint32 count, bool update, bool 
                             DestroyItem(i, j, update);
 
                             if (remcount >= count)
-                                return;
+                                return remcount;
                         }
                         else
                         {
@@ -12582,7 +12582,7 @@ void Player::DestroyItemCount(uint32 itemEntry, uint32 count, bool update, bool 
                             if (IsInWorld() && update)
                                 item->SendUpdateToPlayer(this);
                             item->SetState(ITEM_CHANGED, this);
-                            return;
+                            return remcount;
                         }
                     }
                 }
@@ -12605,7 +12605,7 @@ void Player::DestroyItemCount(uint32 itemEntry, uint32 count, bool update, bool 
                         DestroyItem(INVENTORY_SLOT_BAG_0, i, update);
 
                         if (remcount >= count)
-                            return;
+                            return remcount;
                     }
                 }
                 else
@@ -12615,7 +12615,7 @@ void Player::DestroyItemCount(uint32 itemEntry, uint32 count, bool update, bool 
                     if (IsInWorld() && update)
                         item->SendUpdateToPlayer(this);
                     item->SetState(ITEM_CHANGED, this);
-                    return;
+                    return remcount;
                 }
             }
         }
@@ -12633,7 +12633,7 @@ void Player::DestroyItemCount(uint32 itemEntry, uint32 count, bool update, bool 
                     remcount += item->GetCount();
                     DestroyItem(INVENTORY_SLOT_BAG_0, i, update);
                     if (remcount >= count)
-                        return;
+                        return remcount;
                 }
                 else
                 {
@@ -12642,7 +12642,7 @@ void Player::DestroyItemCount(uint32 itemEntry, uint32 count, bool update, bool 
                     if (IsInWorld() && update)
                         item->SendUpdateToPlayer(this);
                     item->SetState(ITEM_CHANGED, this);
-                    return;
+                    return remcount;
                 }
             }
         }
@@ -12666,7 +12666,7 @@ void Player::DestroyItemCount(uint32 itemEntry, uint32 count, bool update, bool 
                             DestroyItem(i, j, update);
 
                             if (remcount >= count)
-                                return;
+                                return remcount;
                         }
                         else
                         {
@@ -12675,13 +12675,14 @@ void Player::DestroyItemCount(uint32 itemEntry, uint32 count, bool update, bool 
                             if (IsInWorld() && update)
                                 item->SendUpdateToPlayer(this);
                             item->SetState(ITEM_CHANGED, this);
-                            return;
+                            return remcount;
                         }
                     }
                 }
             }
         }
     }
+    return remcount;
 }
 
 void Player::DestroyZoneLimitedItem(bool update, uint32 new_zone)
