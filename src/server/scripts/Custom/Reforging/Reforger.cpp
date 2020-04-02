@@ -226,7 +226,7 @@ public:
     void OnSave(Player* player) override
     {
         uint32 lowguid = player->GetGUID().GetCounter();
-        SQLTransaction trans = CharacterDatabase.BeginTransaction();
+        auto trans = CharacterDatabase.BeginTransaction();
         trans->PAppend("DELETE FROM `custom_reforging` WHERE `Owner` = %u", lowguid);
         if (!player->reforgeMap.empty())
         {
