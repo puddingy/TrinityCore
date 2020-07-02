@@ -20,6 +20,7 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "DatabaseEnv.h"
+#include <Configuration\Config.h>
 
 /*
 Reforging by Rochet2
@@ -41,13 +42,19 @@ Edit IsReforgable is you want to tweak requirements
 */
 
 // Remember to add to GetStatName too
-static const ItemModType statTypes[] = { ITEM_MOD_SPIRIT, ITEM_MOD_DODGE_RATING, ITEM_MOD_PARRY_RATING, ITEM_MOD_HIT_RATING, ITEM_MOD_CRIT_RATING, ITEM_MOD_HASTE_RATING, ITEM_MOD_EXPERTISE_RATING };
+static const ItemModType statTypes[] = { ITEM_MOD_STAMINA, ITEM_MOD_STRENGTH, ITEM_MOD_AGILITY, ITEM_MOD_INTELLECT, ITEM_MOD_SPIRIT, ITEM_MOD_DODGE_RATING,
+ITEM_MOD_PARRY_RATING, ITEM_MOD_HIT_RATING, ITEM_MOD_CRIT_RATING, ITEM_MOD_HASTE_RATING, ITEM_MOD_EXPERTISE_RATING, ITEM_MOD_RESILIENCE_RATING,
+ITEM_MOD_SPELL_POWER, ITEM_MOD_ATTACK_POWER, ITEM_MOD_BLOCK_RATING, ITEM_MOD_DEFENSE_SKILL_RATING};
 static const uint8 stat_type_max = sizeof(statTypes) / sizeof(*statTypes);
 
 static const char* GetStatName(uint32 ItemStatType)
 {
     switch (ItemStatType)
     {
+        case ITEM_MOD_STAMINA: return "Stamina"; break;
+        case ITEM_MOD_STRENGTH: return "Strength"; break;
+        case ITEM_MOD_AGILITY: return "Agility"; break;
+        case ITEM_MOD_INTELLECT: return "Intellect"; break;
         case ITEM_MOD_SPIRIT: return "Spirit"; break;
         case ITEM_MOD_DODGE_RATING: return "Dodge rating"; break;
         case ITEM_MOD_PARRY_RATING: return "Parry rating"; break;
@@ -55,6 +62,11 @@ static const char* GetStatName(uint32 ItemStatType)
         case ITEM_MOD_CRIT_RATING: return "Crit rating"; break;
         case ITEM_MOD_HASTE_RATING: return "Haste rating"; break;
         case ITEM_MOD_EXPERTISE_RATING: return "Expertise rating"; break;
+        case ITEM_MOD_RESILIENCE_RATING: return "Resilience rating"; break;
+        case ITEM_MOD_SPELL_POWER: return "Spell power"; break;
+        case ITEM_MOD_ATTACK_POWER: return "Attack power"; break;
+        case ITEM_MOD_BLOCK_RATING: return "Block rating"; break;
+        case ITEM_MOD_DEFENSE_SKILL_RATING: return "Defence rating"; break;
         default: return NULL;
     }
 }
@@ -110,6 +122,7 @@ static bool IsReforgable(Item* invItem, Player* player)
 {
     //if (!invItem->IsEquipped())
     //    return false;
+    float reforgeValue = sConfigMgr->GetFloatDefault("Reforger.Value", 0.4f);
     if (invItem->GetOwnerGUID() != player->GetGUID())
         return false;
     const ItemTemplate* pProto = invItem->GetTemplate();
@@ -125,7 +138,7 @@ static bool IsReforgable(Item* invItem, Player* player)
     {
         if (!GetStatName(pProto->ItemStat[i].ItemStatType))
             continue;
-        if (((int32)floorf((float)pProto->ItemStat[i].ItemStatValue * 0.4f)) > 1)
+        if (((int32)floorf((float)pProto->ItemStat[i].ItemStatValue * reforgeValue)) > 1)
             return true;
     }
     return false;
@@ -134,6 +147,8 @@ static bool IsReforgable(Item* invItem, Player* player)
 static void UpdatePlayerReforgeStats(Item* invItem, Player* player, uint32 decrease, uint32 increase) // stat types
 {
     const ItemTemplate* pProto = invItem->GetTemplate();
+    float reforgeValue = sConfigMgr->GetFloatDefault("Reforger.Value", 0.4f);
+    int reforgeCost = sConfigMgr->GetIntDefault("Reforger.Cost", 10);
 
     int32 stat_diff = 0;
     for (uint32 i = 0; i < pProto->StatsCount; ++i)
@@ -141,7 +156,7 @@ static void UpdatePlayerReforgeStats(Item* invItem, Player* player, uint32 decre
         if (pProto->ItemStat[i].ItemStatType == increase)
             return; // Should not have the increased stat already
         if (pProto->ItemStat[i].ItemStatType == decrease)
-            stat_diff = (int32)floorf((float)pProto->ItemStat[i].ItemStatValue * 0.4f);
+            stat_diff = (int32)floorf((float)pProto->ItemStat[i].ItemStatValue * reforgeValue);
     }
     if (stat_diff <= 0)
         return; // Should have some kind of diff
@@ -157,7 +172,7 @@ static void UpdatePlayerReforgeStats(Item* invItem, Player* player, uint32 decre
     if (invItem->IsEquipped())
         player->_ApplyItemMods(invItem, invItem->GetSlot(), true);
     // CharacterDatabase.PExecute("REPLACE INTO `custom_reforging` (`GUID`, `increase`, `decrease`, `stat_value`) VALUES (%u, %u, %u, %i)", guidlow, increase, decrease, stat_diff);
-    player->ModifyMoney(pProto->SellPrice < (10 * GOLD) ? (-10 * GOLD) : -(int32)pProto->SellPrice);
+    player->ModifyMoney(pProto->SellPrice < (reforgeCost * GOLD) ? (-1 * reforgeCost * GOLD) : -(int32)pProto->SellPrice);
     SendReforgePacket(player, invItem->GetEntry(), 0, &data);
     // player->SaveToDB();
 }
@@ -337,7 +352,8 @@ public:
                             AddGossipItemFor(player, GOSSIP_ICON_BATTLE, "Stat to decrease:", sender, melt);
                             for (uint32 i = 0; i < pProto->StatsCount; ++i)
                             {
-                                int32 stat_diff = ((int32)floorf((float)pProto->ItemStat[i].ItemStatValue * 0.4f));
+                                float reforgeValue = sConfigMgr->GetFloatDefault("Reforger.Value", 0.4f);
+                                int32 stat_diff = ((int32)floorf((float)pProto->ItemStat[i].ItemStatValue * reforgeValue));
                                 if (stat_diff > 1)
                                     if (const char* stat_name = GetStatName(pProto->ItemStat[i].ItemStatType))
                                     {
@@ -369,7 +385,9 @@ public:
                         if (invItem)
                         {
                             const ItemTemplate* pProto = invItem->GetTemplate();
-                            int32 stat_diff = ((int32)floorf((float)pProto->ItemStat[action].ItemStatValue * 0.4f));
+                            float reforgeValue = sConfigMgr->GetFloatDefault("Reforger.Value", 0.4f);
+                            int reforgeCost = sConfigMgr->GetIntDefault("Reforger.Cost", 10);
+                            int32 stat_diff = ((int32)floorf((float)pProto->ItemStat[action].ItemStatValue * reforgeValue));
 
                             AddGossipItemFor(player, GOSSIP_ICON_BATTLE, "Stat to increase:", sender, melt);
                             for (uint8 i = 0; i < stat_type_max; ++i)
@@ -389,7 +407,7 @@ public:
                                 {
                                     std::ostringstream oss;
                                     oss << stat_name << " |cFF3ECB3C+" << stat_diff << "|r";
-                                    AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, oss.str(), sender, Melt(i, (uint8)pProto->ItemStat[action].ItemStatType), "Are you sure you want to reforge\n\n" + pProto->Name1, (pProto->SellPrice < (10 * GOLD) ? (10 * GOLD) : pProto->SellPrice), false);
+                                    AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, oss.str(), sender, Melt(i, (uint8)pProto->ItemStat[action].ItemStatType), "Are you sure you want to reforge\n\n" + pProto->Name1, (pProto->SellPrice < (reforgeCost* GOLD) ? (reforgeCost * GOLD) : pProto->SellPrice), false);
                                 }
                             }
                             AddGossipItemFor(player, GOSSIP_ICON_TALK, "Back..", 0, Melt(SELECT_STAT_REDUCE, invItem->GetSlot()));
@@ -439,9 +457,10 @@ public:
                         if (menu < stat_type_max)
                         {
                             Item* invItem = GetEquippedItem(player, sender);
+                            int reforgeCost = sConfigMgr->GetIntDefault("Reforger.Cost", 10);
                             if (invItem && IsReforgable(invItem, player))
                             {
-                                if (player->HasEnoughMoney(invItem->GetTemplate()->SellPrice < (10 * GOLD) ? (10 * GOLD) : invItem->GetTemplate()->SellPrice))
+                                if (player->HasEnoughMoney(invItem->GetTemplate()->SellPrice < (reforgeCost * GOLD) ? (reforgeCost * GOLD) : invItem->GetTemplate()->SellPrice))
                                 {
                                     // int32 stat_diff = ((int32)floorf((float)invItem->GetTemplate()->ItemStat[action].ItemStatValue * 0.4f));
                                     UpdatePlayerReforgeStats(invItem, player, action, statTypes[menu]); // rewrite this function
