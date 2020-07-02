@@ -17,6 +17,7 @@
 
 // This is where scripts' loading functions should be declared:
 void AddSC_REFORGER_NPC();
+void AddSC_levelupitem();
 
 
 // The name of this function should match:
@@ -24,4 +25,5 @@ void AddSC_REFORGER_NPC();
 void AddCustomScripts()
 {
     AddSC_REFORGER_NPC();
+    AddSC_levelupitem();
 }
