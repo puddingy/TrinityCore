@@ -734,6 +734,17 @@ class TC_GAME_API PlayerScript : public ScriptObject
         // Called after a player's quest status has been changed
         virtual void OnQuestStatusChange(Player* /*player*/, uint32 /*questId*/) { }
 
+        //PUDPUD
+        //After looting item
+        virtual void OnLootItem(Player* player, Item* item, uint32 count) { }
+
+        //After creating item (eg profession item creation)
+        virtual void OnCreateItem(Player* player, Item* item, uint32 count) { }
+
+        //After receiving item as a quest reward
+        virtual void OnQuestRewardItem(Player* player, Item* item, uint32 count) { }
+        //PUDPUD
+
         // Called when a player completes a movie
         virtual void OnMovieComplete(Player* /*player*/, uint32 /*movieId*/) { }
 
@@ -1056,6 +1067,11 @@ class TC_GAME_API ScriptMgr
         void OnGossipSelectCode(Player* player, uint32 menu_id, uint32 sender, uint32 action, const char* code);
         void OnQuestObjectiveProgress(Player* player, Quest const* quest, uint32 objectiveIndex, uint16 progress);
         void OnQuestStatusChange(Player* player, uint32 questId);
+        //PUDPUD
+        void OnLootItem(Player* player, Item* item, uint32 count);
+        void OnCreateItem(Player* player, Item* item, uint32 count);
+        void OnQuestRewardItem(Player* player, Item* item, uint32 count);
+        //PUDPUD
         void OnMovieComplete(Player* player, uint32 movieId);
         void OnPlayerRepop(Player* player);
 

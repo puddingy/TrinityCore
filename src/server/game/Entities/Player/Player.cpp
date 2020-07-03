@@ -15196,6 +15196,9 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
                 {
                     Item* item = StoreNewItem(dest, itemId, true, GenerateItemRandomPropertyId(itemId));
                     SendNewItem(item, quest->RewardItemIdCount[i], true, false, false, false);
+                    /*
+                     sScriptMgr->OnQuestRewardItem(player, item, Quest::GetRewItemsCount());
+                    */
                 }
                 else if (quest->IsDFQuest())
                     SendItemRetrievalMail(itemId, quest->RewardItemIdCount[i]);
@@ -24936,7 +24939,9 @@ void Player::StoreLootItem(uint8 lootSlot, Loot* loot)
         // LootItem is being removed (looted) from the container, delete it from the DB.
         if (loot->containerID > 0)
             sLootItemStorage->RemoveStoredLootItemForContainer(loot->containerID, item->itemid, item->count);
-
+        //PUDPUD
+            sScriptMgr->OnLootItem(this, newitem, item->count);
+        //PUDPUD
     }
     else
         SendEquipError(msg, nullptr, nullptr, item->itemid);
