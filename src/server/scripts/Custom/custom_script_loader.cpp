@@ -19,6 +19,7 @@
 void AddSC_REFORGER_NPC();
 void AddSC_levelupitem();
 void AddSC_RandomEnchantsScripts();
+void AddSC_addstatitem();
 
 
 // The name of this function should match:
@@ -28,4 +29,5 @@ void AddCustomScripts()
     AddSC_REFORGER_NPC();
     AddSC_levelupitem();
     AddSC_RandomEnchantsScripts();
+    AddSC_addstatitem();
 }
