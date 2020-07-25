@@ -1734,7 +1734,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         JoinedChannelsList const& GetJoinedChannels() const { return m_channels; }
 
         void UpdateDefense();
-        void UpdateWeaponSkill(Unit* victim, WeaponAttackType attType);
+        void UpdateWeaponSkill (WeaponAttackType attType);
         void UpdateCombatSkills(Unit* victim, WeaponAttackType attType, bool defense);
 
         void SetSkill(uint16 id, uint16 step, uint16 newVal, uint16 maxVal);

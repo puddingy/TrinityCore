@@ -223,7 +223,7 @@ class boss_kologarn : public CreatureScript
                         break;
                     case NPC_RUBBLE:
                         summons.Summon(summon);
-                        [[fallthrough]];
+                        // absence of break intended
                     default:
                         return;
                 }

@@ -1756,7 +1756,6 @@ void Spell::SendLoot(ObjectGuid guid, LootType loottype)
                     gameObjTarget->TriggeringLinkedGameObject(trapEntry, player);
 
                 // Don't return, let loots been taken
-                break;
             default:
                 break;
         }
@@ -3764,7 +3763,7 @@ void Spell::EffectActivateObject(SpellEffIndex effIndex)
         case GameObjectActions::OpenAndUnlock:
             if (Unit* unitCaster = m_caster->ToUnit())
                 gameObjTarget->UseDoorOrButton(0, false, unitCaster);
-            [[fallthrough]];
+            /* fallthrough */
         case GameObjectActions::Unlock:
         case GameObjectActions::Lock:
             gameObjTarget->ApplyModFlag(GAMEOBJECT_FLAGS, GO_FLAG_LOCKED, action == GameObjectActions::Lock);

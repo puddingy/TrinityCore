@@ -21,7 +21,6 @@
 #include "DatabaseEnvFwd.h"
 #include "DBCEnums.h"
 #include "DBCStores.h"
-#include "Duration.h"
 #include "ObjectGuid.h"
 #include <string>
 #include <unordered_map>
@@ -399,9 +398,9 @@ class TC_GAME_API AchievementGlobalMgr
         AchievementListByReferencedId m_AchievementListByReferencedId;
 
         // store realm first achievements
-        // SystemTimePoint::min() is a placeholder value for realm firsts not yet completed
-        // SystemTimePoint::max() is a value assigned to realm firsts complete before worldserver started
-        std::unordered_map<uint32 /*achievementId*/, SystemTimePoint /*completionTime*/> _allCompletedAchievements;
+        // std::chrono::system_clock::time_point::min() is a placeholder value for realm firsts not yet completed
+        // std::chrono::system_clock::time_point::max() is a value assigned to realm firsts complete before worldserver started
+        std::unordered_map<uint32 /*achievementId*/, std::chrono::system_clock::time_point /*completionTime*/> _allCompletedAchievements;
 
         AchievementRewards m_achievementRewards;
         AchievementRewardLocales m_achievementRewardLocales;

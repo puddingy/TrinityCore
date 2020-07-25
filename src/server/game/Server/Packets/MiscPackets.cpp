@@ -204,7 +204,7 @@ void WorldPackets::Misc::WorldTeleport::Read()
 
 WorldPacket const* WorldPackets::Misc::CorpseReclaimDelay::Write()
 {
-    _worldPacket << uint32(Remaining);
+    _worldPacket << Remaining;
 
     return &_worldPacket;
 }

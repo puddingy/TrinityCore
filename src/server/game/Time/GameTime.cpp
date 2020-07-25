@@ -25,8 +25,8 @@ namespace GameTime
     time_t GameTime = time(nullptr);
     uint32 GameMSTime = 0;
 
-    SystemTimePoint GameTimeSystemPoint = SystemTimePoint ::min();
-    TimePoint GameTimeSteadyPoint = TimePoint::min();
+    std::chrono::system_clock::time_point GameTimeSystemPoint = std::chrono::system_clock::time_point::min();
+    std::chrono::steady_clock::time_point GameTimeSteadyPoint = std::chrono::steady_clock::time_point::min();
 
     time_t GetStartTime()
     {
@@ -43,12 +43,12 @@ namespace GameTime
         return GameMSTime;
     }
 
-    SystemTimePoint GetSystemTime()
+    std::chrono::system_clock::time_point GetGameTimeSystemPoint()
     {
         return GameTimeSystemPoint;
     }
 
-    TimePoint Now()
+    std::chrono::steady_clock::time_point GetGameTimeSteadyPoint()
     {
         return GameTimeSteadyPoint;
     }

@@ -167,7 +167,7 @@ void WardenCheckMgr::LoadWardenOverrides()
 
     uint32 count = 0;
 
-    std::unique_lock<std::shared_mutex> lock(sWardenCheckMgr->_checkStoreLock);
+    boost::unique_lock<boost::shared_mutex> lock(sWardenCheckMgr->_checkStoreLock);
 
     do
     {

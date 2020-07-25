@@ -21,13 +21,17 @@
 #include "Define.h"
 #include "DatabaseEnvFwd.h"
 
-#include <shared_mutex>
 #include <unordered_map>
 
 class Item;
 class Player;
 struct Loot;
 struct LootItem;
+
+namespace boost
+{
+    class shared_mutex;
+}
 
 struct StoredLootItem
 {
@@ -72,7 +76,7 @@ class LootItemStorage
 {
     public:
         static LootItemStorage* instance();
-        static std::shared_mutex* GetLock();
+        static boost::shared_mutex* GetLock();
 
         void LoadStorageFromDB();
         bool LoadStoredLoot(Item* item, Player* player);

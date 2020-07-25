@@ -40,7 +40,6 @@ DBCDatabaseLoader::DBCDatabaseLoader(char const* tableName, char const* dbFormat
         {
             case FT_SQL_PRESENT:
                 ++_sqlIndexPos;
-                break;
             case FT_SQL_ABSENT:
                 break;
             default:

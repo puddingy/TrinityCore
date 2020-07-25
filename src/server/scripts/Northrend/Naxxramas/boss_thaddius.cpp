@@ -796,7 +796,6 @@ public:
                         if (GameObject* coil = myCoilGO())
                             coil->SetGoState(GO_STATE_READY);
                         me->DespawnOrUnsummon(0, Hours(24 * 7));
-                        break;
                     default:
                         break;
                 }

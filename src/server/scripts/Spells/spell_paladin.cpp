@@ -1992,7 +1992,7 @@ class spell_pal_sacred_shield_dummy : public SpellScriptLoader
                 if (!caster)
                     return;
 
-                TimePoint now = GameTime::Now();
+                std::chrono::steady_clock::time_point now = GameTime::GetGameTimeSteadyPoint();
                 if (_cooldownEnd > now)
                     return;
 
@@ -2010,7 +2010,7 @@ class spell_pal_sacred_shield_dummy : public SpellScriptLoader
             }
 
             // Cooldown tracking can't be done in DB because of T8 bonus
-            TimePoint _cooldownEnd = std::chrono::steady_clock::time_point::min();
+            std::chrono::steady_clock::time_point _cooldownEnd = std::chrono::steady_clock::time_point::min();
         };
 
         AuraScript* GetAuraScript() const override

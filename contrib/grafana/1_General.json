@@ -28,7 +28,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 5,
-  "iteration": 1595020261725,
+  "iteration": 1592337582972,
   "links": [],
   "panels": [
     {
@@ -56,12 +56,6 @@
         "show": false,
         "thresholdLabels": false,
         "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 0,
-        "y": 0
       },
       "hideTimeOverride": false,
       "id": 5,
@@ -182,8 +176,8 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 5,
-        "x": 4,
+        "w": 6,
+        "x": 6,
         "y": 0
       },
       "id": 6,
@@ -309,8 +303,8 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 5,
-        "x": 9,
+        "w": 6,
+        "x": 12,
         "y": 0
       },
       "id": 7,
@@ -436,8 +430,8 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 5,
-        "x": 14,
+        "w": 6,
+        "x": 18,
         "y": 0
       },
       "id": 8,
@@ -496,8 +490,6 @@
           "measurement": "update_time_diff",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"value\") FROM \"update_time_diff\" WHERE (\"realm\" =~ /^$realm$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
-          "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -537,74 +529,6 @@
         }
       ],
       "valueName": "avg"
-    },
-    {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 5,
-        "x": 19,
-        "y": 0
-      },
-      "id": 12,
-      "options": {
-        "showLabels": false,
-        "showTime": true,
-        "sortOrder": "Descending",
-        "wrapLogMessage": true
-      },
-      "targets": [
-        {
-          "groupBy": [],
-          "measurement": "events",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT \"title\" FROM \"events\" WHERE (\"realm\" =~ /^$realm$/) order by \"time\" desc limit 2",
-          "rawQuery": true,
-          "refId": "A",
-          "resultFormat": "table",
-          "select": [
-            [
-              {
-                "params": [
-                  "title"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "last"
-              }
-            ]
-          ],
-          "tags": []
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Recent events",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "title": false
-            },
-            "indexByName": {},
-            "renameByName": {
-              "Time": "",
-              "title": ""
-            }
-          }
-        }
-      ],
-      "type": "logs"
     },
     {
       "aliasColors": {},
@@ -682,10 +606,8 @@
             }
           ],
           "measurement": "update_time_diff",
-          "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT max(\"value\") FROM \"update_time_diff\" WHERE (\"realm\" =~ /$realm$/) AND $timeFilter GROUP BY time($interval) fill(null)",
-          "rawQuery": false,
+          "query": "SELECT mean(\"value\") FROM \"update_time_diff\" WHERE \"realm\" =~ /$realm$/ AND $timeFilter GROUP BY time($interval) fill(null)",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -698,7 +620,7 @@
               },
               {
                 "params": [],
-                "type": "max"
+                "type": "mean"
               }
             ]
           ],
@@ -738,148 +660,7 @@
       ],
       "yaxes": [
         {
-          "format": "ms",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
           "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 10
-      },
-      "hiddenSeries": false,
-      "id": 10,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "hideEmpty": false,
-        "hideZero": true,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 2,
-      "nullPointMode": "connected",
-      "options": {
-        "dataLinks": []
-      },
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "alias": "Map $tag_map_id",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "map_id"
-              ],
-              "type": "tag"
-            },
-            {
-              "params": [
-                "none"
-              ],
-              "type": "fill"
-            }
-          ],
-          "measurement": "map_update_time_diff",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT max(\"value\") FROM \"map_update_time_diff\" WHERE (\"realm\" =~ /^$realm$/) AND $timeFilter GROUP BY time($__interval), \"map_id\" fill(none)",
-          "rawQuery": false,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              },
-              {
-                "params": [],
-                "type": "max"
-              }
-            ]
-          ],
-          "tags": [
-            {
-              "key": "realm",
-              "operator": "=~",
-              "value": "/^$realm$/"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Map update",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "ms",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -928,7 +709,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 10
       },
       "hiddenSeries": false,
       "id": 4,
@@ -1079,7 +860,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 17
       },
       "hiddenSeries": false,
       "id": 3,
@@ -1315,5 +1096,5 @@
   "timezone": "browser",
   "title": "General info",
   "uid": "BfuPZmZMz",
-  "version": 3
+  "version": 1
 }

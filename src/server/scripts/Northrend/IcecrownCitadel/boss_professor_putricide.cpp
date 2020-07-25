@@ -693,7 +693,6 @@ class boss_professor_putricide : public CreatureScript
                                 default:
                                     break;
                             }
-                            break;
                         }
                         default:
                             break;
