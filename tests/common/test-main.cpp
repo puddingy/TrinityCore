@@ -15,31 +15,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __UPDATETIME_H
-#define __UPDATETIME_H
 
-#include "Define.h"
-
-class TC_GAME_API UpdateTime
-{
-    public:
-        uint32 GetLastUpdateTime() const;
-
-        void UpdateWithDiff(uint32 diff);
-
-    protected:
-        UpdateTime();
-
-    private:
-        uint32 _lastUpdateTime;
-};
-
-class TC_GAME_API WorldUpdateTime : public UpdateTime
-{
-    public:
-        WorldUpdateTime() : UpdateTime() { }
-};
-
-TC_GAME_API extern WorldUpdateTime sWorldUpdateTime;
-
-#endif
+#define CATCH_CONFIG_MAIN
+#include "catch2/catch.hpp"
