@@ -2016,6 +2016,23 @@ void ScriptMgr::OnFailedPasswordChange(uint32 accountId)
     FOREACH_SCRIPT(AccountScript)->OnFailedPasswordChange(accountId);
 }
 
+//PUDPUD
+void ScriptMgr::OnLootItem(Player* player, Item* item, uint32 count)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnLootItem(player, item, count);
+}
+
+void ScriptMgr::OnCreateItem(Player* player, Item* item, uint32 count)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnCreateItem(player, item, count);
+}
+
+void ScriptMgr::OnQuestRewardItem(Player* player, Item* item, uint32 count)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnQuestRewardItem(player, item, count);
+}
+//PUDPUD
+
 // Guild
 void ScriptMgr::OnGuildAddMember(Guild* guild, Player* player, uint8& plRank)
 {
