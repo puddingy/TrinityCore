@@ -100,6 +100,7 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "WorldStatePackets.h"
+#include <Configuration\Config.h>
 
 #define ZONE_UPDATE_INTERVAL (1*IN_MILLISECONDS)
 
@@ -22004,8 +22005,13 @@ void Player::UpdatePvP(bool state, bool _override)
 void Player::UpdatePotionCooldown(Spell* spell)
 {
     // no potion used i combat or still in combat
-    if (!m_lastPotionId || IsInCombat())
-        return;
+    //PUDPUD - Use multiple potions in a fight
+    if (!sConfigMgr->GetBoolDefault("MultiplePotions", false))
+    {
+        if (!m_lastPotionId || IsInCombat())
+            return;
+    }
+    //PUDPUD
 
     // Call not from spell cast, send cooldown event for item spells if no in combat
     if (!spell)
